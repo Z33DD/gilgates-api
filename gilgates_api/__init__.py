@@ -1,3 +1,3 @@
 __version__ = '0.1.0'
 
-from context import context
+from gilgates_api.context import context

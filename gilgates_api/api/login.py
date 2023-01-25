@@ -1,11 +1,14 @@
-from fastapi import status, HTTPException, Depends
-from gilgates_api.api import router
+from fastapi import status, HTTPException, Depends, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
-from gilgates_api.context import context
-from gilgates_api.services.auth.password import verify_password
-from gilgates_api.services.auth.token import create_access_token, create_refresh_token
+from gilgates_api import context
+from gilgates_api.services.auth import (
+    verify_password,
+    create_access_token,
+    create_refresh_token,
+)
 
+router = APIRouter()
 
 class TokenSchema(BaseModel):
     access_token: str

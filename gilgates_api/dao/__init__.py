@@ -35,16 +35,15 @@ class BaseDAO(Generic[T]):
         for item in items:
             item = dict(item)
             obj = self.__make_object(item)
-            self.cache.update({item["uid"]: obj})
+            self.cache.update({uuid.UUID(item["uid"]): obj})
 
     async def get(self, item_id: uuid.UUID) -> T | None:
-        if str(item_id) not in self.cache.keys():
+        if item_id not in self.cache.keys():
             await self.read([item_id])
         return self.cache.get(item_id)
 
     async def delete(self, item_id: uuid.UUID) -> None:
-        item_id = str(item_id)
-        query = self.table.delete().where(self.table.c.uid == item_id)
+        query = self.table.delete().where(self.table.c.uid == str(item_id))
         self.cache.pop(item_id, None)
         await db.execute(query)
 
@@ -52,6 +51,7 @@ class BaseDAO(Generic[T]):
         values = item.dict()
         values["uid"] = str(item.uid)
         query = self.table.insert(values)
+        self.cache.update({item.uid: item})
 
         await db.execute(query)
         return item.uid
@@ -63,15 +63,13 @@ class BaseDAO(Generic[T]):
         query = self.table.update(self.table.c.uid == item_id, values)
         await db.execute(query)
 
-    async def query(self, condition) -> List[T] | None:
-        query = self.table.delete().where(condition)
-        result = await db.execute(query)
-        return self.__make_objects(result)
-
     async def get_all(self) -> List[T]:
         query = self.table.select()
         result = await db.execute(query)
         return self.__make_objects(result)
+    
+    def clear(self) -> None:
+        self.cache = {}
 
     def __make_object(self, data: Dict[str, Any]) -> T:
         return self.schema.parse_obj(data)

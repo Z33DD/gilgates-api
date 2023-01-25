@@ -1,24 +1,28 @@
 import secrets
-from gilgates_api.dao.user import UserDAO
+from pydantic import EmailStr, SecretStr
 from gilgates_api.model.user import User
+from gilgates_api import context
+from gilgates_api.services.auth.password import hash_password
 
 
 async def test_create_user():
     email = f"{secrets.token_hex(8)}@example.com"
-    dao = UserDAO()
-    user = User(name="Pedro Antonio", email=email)
-    uuid = await dao.create(user)
+    password = hash_password(str(secrets.token_hex(8)))
+    
+    dao = context.get()
+    user = User(name="Pedro Antonio", email=EmailStr(email), password=password)
+    uuid = await dao.user.create(user)
 
     assert uuid is not None
 
 
 async def test_get_user():
     email = f"{secrets.token_hex(8)}@example.com"
-    dao = UserDAO()
-    expected = User(name="Test user", email=email)
-    uuid = await dao.create(expected)
+    dao = context.get()
+    expected = User(name="Test user", email=EmailStr(email))
+    uuid = await dao.user.create(expected)
 
-    user = await dao.get(uuid)
+    user = await dao.user.get(uuid)
 
     assert user is not None
     assert user.name == expected.name
@@ -27,34 +31,35 @@ async def test_get_user():
 
 async def test_update_user():
     email = f"{secrets.token_hex(8)}@example.com"
-    dao = UserDAO()
-    expected = User(name="Apple", email=email)
-    uuid = await dao.create(expected)
+    dao = context.get()
+    expected = User(name="Apple", email=EmailStr(email))
+    uuid = await dao.user.create(expected)
 
-    user: User = await dao.get(uuid)
+    user: User | None = await dao.user.get(uuid)
+    assert user is not None
 
     user.name = "Banana"
-    await dao.update(user)
+    await dao.user.update(user)
 
-    del dao
-    dao = UserDAO()
-    user: User = await dao.get(uuid)
+    dao.user.clear()
+
+    user: User | None = await dao.user.get(uuid)
     assert user is not None
     assert user.name == "Banana"
 
 
 async def test_delete_user():
     email = f"{secrets.token_hex(8)}@example.com"
-    dao = UserDAO()
-    expected = User(name="Test user", email=email)
-    uuid = await dao.create(expected)
+    dao = context.get()
+    expected = User(name="Test user", email=EmailStr(email))
+    uuid = await dao.user.create(expected)
 
-    user = await dao.get(uuid)
+    user = await dao.user.get(uuid)
 
     assert user is not None
 
-    await dao.delete(uuid)
+    await dao.user.delete(uuid)
 
-    user = await dao.get(uuid)
+    user = await dao.user.get(uuid)
 
     assert user is None

@@ -3,7 +3,6 @@ from typing import Optional
 
 import sqlalchemy as sql
 from sqlalchemy.sql import func
-from pydantic import SecretStr
 from pydantic import EmailStr
 
 from gilgates_api.database import metadata
@@ -31,7 +30,7 @@ class User(Model):
     # Atributos funcionais
     last_login: Optional[datetime] = None
     ative: Optional[bool] = True
-    password: Optional[SecretStr] = None
+    password: Optional[str] = None
     role: Role = Role.AGENTE
     # Atributos naturais
     name: str
