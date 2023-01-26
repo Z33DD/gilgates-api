@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+import json
+from typing import Any, Dict
 from gilgates_api.config import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     ALGORITHM,
@@ -23,7 +25,7 @@ def verify_token(token: str) -> TokenPayload:
     """
     The verify_token function takes a token as an argument and returns the payload
     if the token is valid. If not, it raises an HTTPException with status code 401.
-    
+
     :param token: str: Pass the token string to the function
     :return: The decoded token payload
     :doc-author: Trelent
@@ -69,8 +71,9 @@ def create_access_token(
         exp = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
     payload = TokenPayload(sub=str(user.uid), user=user, exp=exp.timestamp())
+    dict_payload = __extract_payload(payload)
 
-    encoded_jwt = jwt.encode(payload.dict(), SECRET_KEY, ALGORITHM)
+    encoded_jwt = jwt.encode(dict_payload, SECRET_KEY, ALGORITHM)
     return encoded_jwt
 
 
@@ -78,10 +81,10 @@ def create_refresh_token(user: User, expires: timedelta | None = None) -> str:
     """
     The create_refresh_token function creates a refresh token for the user.
     The function takes in two parameters, subject and expires. The subject is the user's id,
-    and expires is an optional parameter that defaults to None if not specified. If no value 
-    is passed into the function for expires then it will default to REFRESH_TOKEN_EXPIRE_MINUTES 
+    and expires is an optional parameter that defaults to None if not specified. If no value
+    is passed into the function for expires then it will default to REFRESH_TOKEN_EXPIRE_MINUTES
     minutes from now.
-    
+
     :param user: User: Get the user's name and uid
     :param expires: timedelta | None: Set the expiration time of the refresh token
     :return: A refresh token
@@ -95,3 +98,9 @@ def create_refresh_token(user: User, expires: timedelta | None = None) -> str:
     to_encode = {"exp": exp, "sub": str(user.uid)}
     encoded_jwt = jwt.encode(to_encode, REFRESH_SECRET_KEY, ALGORITHM)
     return encoded_jwt
+
+
+def __extract_payload(payload: TokenPayload) -> Dict[str, Any]:
+    str_json_payload = payload.json()
+    dict_json_payload = json.loads(str_json_payload)
+    return dict_json_payload

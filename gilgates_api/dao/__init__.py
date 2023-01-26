@@ -29,8 +29,8 @@ class BaseDAO(Generic[T]):
         self.cache = {}
 
     async def read(self, ids: List[uuid.UUID]) -> None:
-        ids = [str(a) for a in ids]
-        query = self.table.select().where(self.table.c.uid.in_(ids))
+        id_list = [str(a) for a in ids]
+        query = self.table.select().where(self.table.c.uid.in_(id_list))
         items = await db.fetch_all(query)
         for item in items:
             item = dict(item)

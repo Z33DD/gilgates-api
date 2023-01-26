@@ -1,5 +1,5 @@
 import secrets
-from pydantic import EmailStr, SecretStr
+from pydantic import EmailStr
 from gilgates_api.model.user import User
 from gilgates_api import context
 from gilgates_api.services.auth.password import hash_password

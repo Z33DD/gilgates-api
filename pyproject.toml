@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gilgates-api"
-version = "0.1.0"
+version = "1.0.0"
 description = ""
 authors = ["Pedro Antonio <pedroantonio@codetta.tech>"]
 
@@ -23,6 +23,7 @@ black = "^22.12.0"
 anyio = "^3.6.2"
 pytest-asyncio = "^0.20.3"
 httpx = "^0.23.3"
+pytest-cov = "^4.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
