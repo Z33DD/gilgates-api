@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import json
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional
 from gilgates_api.config import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     ALGORITHM,
@@ -18,6 +18,7 @@ from gilgates_api.model.user import User
 class TokenPayload(BaseModel):
     sub: str
     user: User
+    scopes: List[str]
     exp: float
 
 
@@ -51,17 +52,16 @@ def verify_token(token: str) -> TokenPayload:
 
 
 def create_access_token(
-    user: User,
-    expires: timedelta | None = None,
+    user: User, expires: Optional[timedelta] = None, scopes: Optional[List[str]] = None
 ) -> str:
     """
-    The create_access_token function creates a JWT access token for the user.
-    It takes in a User object and an optional timedelta object as arguments.
-    If the timedelta is not provided, it defaults to 30 minutes.
+    The create_access_token function creates an access token for a user.
+    It takes in the user object and returns a string of the encoded JWT
 
-    :param user: User: Get the user's name and uid
-    :param expires: timedelta | None: Set the expiration time of the token
-    :return: A string that represents the token
+    :param user: User: Pass in the user object
+    :param expires: Optional[timedelta]: Set the expiration time of the token
+    :param scopes: Optional[List[str]]: Define the scopes that are allowed to access the token
+    :return: A jwt that has the following format:
     :doc-author: Trelent
     """
 
@@ -69,8 +69,13 @@ def create_access_token(
         exp = datetime.utcnow() + expires
     else:
         exp = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    
+    if not scopes:
+        scopes = [user.role]
 
-    payload = TokenPayload(sub=str(user.uid), user=user, exp=exp.timestamp())
+    payload = TokenPayload(
+        sub=str(user.uid), user=user, exp=exp.timestamp(), scopes=scopes
+    )
     dict_payload = __extract_payload(payload)
 
     encoded_jwt = jwt.encode(dict_payload, SECRET_KEY, ALGORITHM)

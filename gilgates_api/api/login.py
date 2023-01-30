@@ -10,6 +10,7 @@ from gilgates_api.services.auth import (
 
 router = APIRouter()
 
+
 class TokenSchema(BaseModel):
     access_token: str
     refresh_token: str
@@ -30,8 +31,13 @@ async def login(form: OAuth2PasswordRequestForm = Depends()):
             detail="Incorrect email or password",
         )
 
-    hashed_pass = str(user.password)
-    if not verify_password(form.password, hashed_pass):
+    if not user.password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User don't have a password",
+        )
+
+    if not verify_password(form.password, user.password):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Incorrect email or password",

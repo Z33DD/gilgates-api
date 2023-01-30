@@ -1,5 +1,5 @@
 import uuid
-from pydantic import BaseModel, EmailStr, SecretStr
+from pydantic import BaseModel, EmailStr
 from fastapi import status, HTTPException, APIRouter
 from gilgates_api import context
 from gilgates_api.model.user import User
@@ -11,7 +11,7 @@ router = APIRouter()
 class UserSignUp(BaseModel):
     name: str
     email: EmailStr
-    password: SecretStr
+    password: str
 
 
 class UserOut(BaseModel):
@@ -30,8 +30,8 @@ async def create_user(data: UserSignUp):
             detail="User with this email already exist",
         )
 
-    password = hash_password(str(data.password))
-    user = User(email=data.email, password=password, name=data.name)
+    user = User(email=data.email, name=data.name)
+    user.password = hash_password(data.password)
     uid = await dao.user.create(user)
 
     return UserOut(email=data.email, uid=uid)
