@@ -34,20 +34,16 @@ DEBUG = env.bool("DEBUG", default=False)
 SECRET_KEY = env.str("SECRET_KEY", secrets.token_urlsafe(32))
 REFRESH_SECRET_KEY = env.str("REFRESH_SECRET_KEY", secrets.token_urlsafe(32))
 ACCESS_TOKEN_EXPIRE_MINUTES = 30  # 30 minutes
-REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # 7 days
+REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 ALGORITHM = "HS256"
-
+MOCK_AUTH = env.bool("MOCK_AUTH", False)
 BCRYPT_LOG_ROUNDS = env.int("BCRYPT_LOG_ROUNDS", default=13)
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ECHO = DEBUG
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-PROPAGATE_EXCEPTIONS = True
-
-CACHE_TYPE = "simple"  # Can be "memcached", "redis", etc.
-
-UPLOAD_FOLDER = env.str("UPLOAD_FOLDER", default="/data")
+UPLOAD_FOLDER = env.str("UPLOAD_FOLDER", default=f"{ROOT_DIR}/data")
 ALLOWED_EXTENSIONS = {"docx", "pdf", "png", "jpg", "jpeg"}
 VERSION = metadata["version"]
 
@@ -60,3 +56,5 @@ AWS_ACCESS_KEY_ID = ""
 AWS_SECRET_ACCESS_KEY = ""
 AWS_REGION = "sa-east-1"
 CHARSET = "UTF-8"
+
+POSTMARK_API_TOKEN = env.str("POSTMARK_API_TOKEN", "")

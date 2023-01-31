@@ -1,17 +1,19 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from gilgates_api.database import db, create_tables
-from gilgates_api import __version__
+from gilgates_api.config import VERSION
 from gilgates_api.api.login import router as login
 from gilgates_api.api.signup import router as signup
+from gilgates_api.api.user import router as user
 
 
 
 def app_factory() -> FastAPI:
-    app = FastAPI(title="GilGates API", version=__version__)
+    app = FastAPI(title="GilGates API", version=VERSION)
 
     app.include_router(login)
     app.include_router(signup)
+    app.include_router(user)
 
     origins = [
         # settings.FRONTEND_URL

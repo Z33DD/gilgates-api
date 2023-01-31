@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gilgates-api"
-version = "1.0.0"
+version = "2.0.0"
 description = ""
 authors = ["Pedro Antonio <pedroantonio@codetta.tech>"]
 
@@ -16,6 +16,8 @@ pydantic = {extras = ["email"], version = "^1.10.4"}
 passlib = "^1.7.4"
 PyJWT = "^2.6.0"
 python-multipart = "^0.0.5"
+postmarker = "^1.0"
+redis = "^4.4.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "7.2.1"
