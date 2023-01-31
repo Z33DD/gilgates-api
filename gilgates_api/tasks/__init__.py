@@ -1,0 +1,1 @@
+from gilgates_api.tasks.email import send_email

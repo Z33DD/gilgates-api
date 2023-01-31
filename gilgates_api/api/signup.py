@@ -4,6 +4,7 @@ from fastapi import status, HTTPException, APIRouter
 from gilgates_api import context
 from gilgates_api.model.user import User
 from gilgates_api.services.auth.password import hash_password
+from gilgates_api.tasks.email import send_email
 
 
 router = APIRouter()
@@ -33,5 +34,6 @@ async def create_user(data: UserSignUp):
     user = User(email=data.email, name=data.name)
     user.password = hash_password(data.password)
     uid = await dao.user.create(user)
+    send_email.delay(user.email)
 
     return UserOut(email=data.email, uid=uid)
