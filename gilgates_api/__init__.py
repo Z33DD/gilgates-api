@@ -1,3 +1,3 @@
-__version__ = '1.0.0'
+from gilgates_api.dao_factory import dao_factory
 
-from gilgates_api.context import context
+__version__ = "2.0.0"

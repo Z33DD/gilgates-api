@@ -1,17 +1,17 @@
-from typing import List
+import uuid
 from gilgates_api.dao import BaseDAO
-from gilgates_api.model.user import user_table, User
-from gilgates_api.database import db
+from gilgates_api.models import User
+from sqlmodel import Session, select
 
 
 class UserDAO(BaseDAO[User]):
-    def __init__(self) -> None:
-        super().__init__(user_table, User)
+    def __init__(self, session: Session) -> None:
+        super().__init__(session, User)
 
     async def get_by_email(self, email: str) -> User | None:
-        query = self.table.select().where(self.table.c.email == email)
-        result = await db.fetch_one(query)
+        statement = select(User).where(User.email == email)
+        result = self.session.exec(statement).one_or_none()
         if not result:
             return None
-        user = User.parse_obj(result)
-        return user
+        self.cache.update({result.uid: result})
+        return result

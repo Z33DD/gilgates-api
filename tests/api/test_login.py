@@ -1,13 +1,14 @@
+import secrets
+from sqlmodel import Session
 from pydantic import EmailStr
 from fastapi.testclient import TestClient
-import secrets
-from gilgates_api.model.user import User
-from gilgates_api import context
+from gilgates_api.models import User
 from gilgates_api.services.auth.password import hash_password
+from gilgates_api import dao_factory
 
 
-async def test_login(client: TestClient):
-    dao = context.get()
+async def test_login(client: TestClient, session: Session):
+    dao = dao_factory(session)
 
     email = f"{secrets.token_hex(8)}@example.com"
     password = secrets.token_hex(10)

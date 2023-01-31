@@ -7,7 +7,6 @@ authors = ["Pedro Antonio <pedroantonio@codetta.tech>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 fastapi = "^0.89.1"
-databases = "^0.7.0"
 uvicorn = "^0.20.0"
 celery = "^5.2.7"
 environs = "^9.5.0"
@@ -16,6 +15,7 @@ pydantic = {extras = ["email"], version = "^1.10.4"}
 passlib = "^1.7.4"
 PyJWT = "^2.6.0"
 python-multipart = "^0.0.5"
+sqlmodel = "^0.0.8"
 
 [tool.poetry.dev-dependencies]
 pytest = "7.2.1"

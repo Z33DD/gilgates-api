@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from gilgates_api.database import db, create_tables
+from gilgates_api.database import create_tables
 from gilgates_api.config import VERSION
 from gilgates_api.api.login import router as login
 from gilgates_api.api.signup import router as signup
@@ -36,13 +36,12 @@ app = app_factory()
 
 @app.on_event("startup")
 async def startup():
-    await db.connect()
-    await create_tables()
+    create_tables()
 
 
 @app.on_event("shutdown")
 async def shutdown():
-    await db.disconnect()
+    pass
 
 
 @app.get("/")
@@ -53,4 +52,4 @@ async def index():
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, reload=True)
+    uvicorn.run(app)

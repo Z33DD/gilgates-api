@@ -1,11 +1,12 @@
 import uuid
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
-from gilgates_api.context import context
-from gilgates_api.model.user import User
-from gilgates_api.model.role import Role
+from gilgates_api.dao_factory import dao_factory
+from gilgates_api.database import engine
+from gilgates_api.models import User
+from gilgates_api.models import Role
 from gilgates_api.services.auth.token import verify_token
-
+from sqlmodel import Session
 
 reuseable_oauth = OAuth2PasswordBearer(
     tokenUrl="/login", scheme_name="JWT", scopes={a.name: a.value for a in Role}
@@ -15,7 +16,6 @@ reuseable_oauth = OAuth2PasswordBearer(
 async def current_user(
     security_scopes: SecurityScopes, token: str = Depends(reuseable_oauth)
 ) -> User:
-    dao = context.get()
 
     if security_scopes.scopes:
         authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
@@ -25,7 +25,9 @@ async def current_user(
     claims = verify_token(token)
     user_id = uuid.UUID(claims.sub)
 
-    user: User | None = await dao.user.get(user_id)
+    with Session(engine) as session:
+        dao = dao_factory(session)
+        user: User | None = await dao.user.get(user_id)
 
     if user is None:
         raise HTTPException(
@@ -46,3 +48,8 @@ async def current_user(
             )
 
     return user
+
+
+def get_session():
+    with Session(engine) as session:
+        yield session
