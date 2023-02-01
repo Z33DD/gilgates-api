@@ -1,6 +1,6 @@
 import uuid
 from gilgates_api.dao import BaseDAO
-from gilgates_api.models import User
+from gilgates_api.model import User
 from sqlmodel import Session, select
 
 

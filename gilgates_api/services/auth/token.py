@@ -12,7 +12,7 @@ from pydantic import ValidationError, BaseModel
 from fastapi import HTTPException, status
 import jwt
 
-from gilgates_api.models import User
+from gilgates_api.model import User
 
 
 class TokenPayload(BaseModel):

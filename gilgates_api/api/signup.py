@@ -4,7 +4,7 @@ from fastapi import status, HTTPException, APIRouter, Depends
 from sqlmodel import Session
 from gilgates_api.dao_factory import dao_factory
 from gilgates_api.deps import get_session
-from gilgates_api.models import User
+from gilgates_api.model import User
 from gilgates_api.services.auth.password import hash_password
 from gilgates_api.tasks import send_email
 

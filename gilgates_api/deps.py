@@ -3,8 +3,8 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from gilgates_api.dao_factory import dao_factory
 from gilgates_api.database import engine
-from gilgates_api.models import User
-from gilgates_api.models import Role
+from gilgates_api.model import User
+from gilgates_api.model import Role
 from gilgates_api.services.auth.token import verify_token
 from sqlmodel import Session
 

@@ -1,7 +1,7 @@
 from typing import Any, Dict, Generic, List, TypeVar
 import uuid
 from sqlmodel import Session, select
-from gilgates_api.models import Model
+from gilgates_api.model import Model
 
 T = TypeVar("T")
 

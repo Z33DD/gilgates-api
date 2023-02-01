@@ -2,7 +2,7 @@ import secrets
 from sqlmodel import Session
 from pydantic import EmailStr
 from fastapi.testclient import TestClient
-from gilgates_api.models import User
+from gilgates_api.model import User
 from gilgates_api.services.auth.password import hash_password
 from gilgates_api import dao_factory
 

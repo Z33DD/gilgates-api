@@ -1,6 +1,6 @@
 from fastapi import Depends, APIRouter
 from gilgates_api import context
-from gilgates_api.models import User
+from gilgates_api.model import User
 from gilgates_api.deps import current_user
 
 router = APIRouter()
