@@ -7,7 +7,6 @@ from gilgates_api.api.signup import router as signup
 from gilgates_api.api.user import router as user
 
 
-
 def app_factory() -> FastAPI:
     app = FastAPI(title="GilGates API", version=VERSION)
 

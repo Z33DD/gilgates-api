@@ -35,7 +35,9 @@ async def current_user(
         )
 
     if not user.ative:
-        raise HTTPException(status_code=400, detail="Inactive user")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Inactive user"
+        )
 
     for scope in security_scopes.scopes:
         if scope not in claims.scopes:
