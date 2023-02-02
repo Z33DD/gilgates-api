@@ -13,8 +13,15 @@ reuseable_oauth = OAuth2PasswordBearer(
 )
 
 
+def get_session():
+    with Session(engine) as session:
+        yield session
+
+
 async def current_user(
-    security_scopes: SecurityScopes, token: str = Depends(reuseable_oauth)
+    security_scopes: SecurityScopes,
+    token: str = Depends(reuseable_oauth),
+    session: Session = Depends(get_session),
 ) -> User:
 
     if security_scopes.scopes:
@@ -25,9 +32,8 @@ async def current_user(
     claims = verify_token(token)
     user_id = uuid.UUID(claims.sub)
 
-    with Session(engine) as session:
-        dao = dao_factory(session)
-        user: User | None = await dao.user.get(user_id)
+    dao = dao_factory(session)
+    user: User | None = await dao.user.get(user_id)
 
     if user is None:
         raise HTTPException(
@@ -48,8 +54,3 @@ async def current_user(
             )
 
     return user
-
-
-def get_session():
-    with Session(engine) as session:
-        yield session
