@@ -5,7 +5,6 @@ from gilgates_api.config import VERSION
 from gilgates_api.api import api_router
 
 
-
 def app_factory() -> FastAPI:
     app = FastAPI(title="GilGates API", version=VERSION)
 
