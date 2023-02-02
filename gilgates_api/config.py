@@ -45,8 +45,8 @@ ALLOWED_EXTENSIONS = {"docx", "pdf", "png", "jpg", "jpeg"}
 VERSION = metadata["version"]
 
 CELERY_CONFIG = {
-    "broker_url": "redis://localhost:6379",
-    "result_backend": "redis://localhost:6379",
+    "broker_url": env.str("CELERY_BROKER_URL"),
+    "result_backend": env.str("CELERY_RESULT_BACKEND"),
 }
 
 AWS_ACCESS_KEY_ID = ""

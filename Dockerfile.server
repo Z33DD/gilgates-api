@@ -1,5 +1,5 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.8-slim
+FROM python:3.10
 
 EXPOSE 8000
 
@@ -20,7 +20,7 @@ USER appuser
 
 # Install requirements with poetry
 RUN python -m pip install poetry
-RUN python -m poetry install --no-dev
+RUN python -m poetry install --only main
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "-k", "uvicorn.workers.UvicornWorker", "gilgates_api.server:app"]
+CMD ["python", "-m", "poetry", "run", "uvicorn", "--host", "0.0.0.0", "--port", "8000", "gilgates_api.server:app"]

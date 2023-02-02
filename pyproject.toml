@@ -18,6 +18,7 @@ python-multipart = "^0.0.5"
 sqlmodel = "^0.0.8"
 postmarker = "^1.0"
 redis = "^4.4.2"
+tomli = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "7.2.1"

@@ -47,4 +47,4 @@ async def index():
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app)
+    uvicorn.run("gilgates_api.server:app", port=8000, log_level="info", reload=True)
