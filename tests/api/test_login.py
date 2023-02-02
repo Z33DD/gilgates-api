@@ -16,11 +16,13 @@ async def test_login(client: TestClient, session: Session):
     user = User(name="Test user for test_login", email=EmailStr(email))
     user.password = hash_password(password)
     await dao.user.create(user)
+    dao.commit()
 
     resp = client.post("/login", data={"username": email, "password": password})
 
     data = resp.json()
-    assert resp.status_code == 200
+    detail = data.get("detail")
+    assert resp.status_code == 200, f"Response: {detail}"
     assert "access_token" in dict(data).keys()
     assert "refresh_token" in dict(data).keys()
 

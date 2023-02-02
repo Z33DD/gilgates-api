@@ -19,15 +19,15 @@ metadata = get_project_metadata(str(ROOT_DIR))
 
 ENV: str = env.str("ENV", default="development")
 
-
 if ENV == "production":
     DATABASE_URL = env.str(
         "DATABASE_URL",
         "postgresql://doadmin:AVNS_QtPqJ0r8kRGu1XJdwXU@gilgates-api-do-user-11151596-0.b.db.ondigitalocean.com:25060/defaultdb?sslmode=require",
     )
+    CONNECT_ARGS = {}
 else:
     DATABASE_URL = "sqlite:///db.sqlite3"
-    SQLALCHEMY_ENGINE_OPTIONS = {"connect_args": {"check_same_thread": False}}
+    CONNECT_ARGS = {"check_same_thread": False}
 
 DEBUG = env.bool("DEBUG", default=False)
 

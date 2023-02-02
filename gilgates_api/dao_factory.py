@@ -1,4 +1,3 @@
-from typing import Optional
 from pydantic import BaseModel
 from sqlmodel import Session
 
@@ -10,6 +9,9 @@ class Dao(BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
+    
+    def commit(self) -> None:
+        self.user.commit()
 
 
 def dao_factory(session: Session) -> Dao:

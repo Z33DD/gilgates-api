@@ -10,7 +10,7 @@ class UserDAO(BaseDAO[User]):
 
     async def get_by_email(self, email: str) -> User | None:
         statement = select(User).where(User.email == email)
-        result = self.session.exec(statement).one_or_none()
+        result = self.db.exec(statement).one_or_none()
         if not result:
             return None
         self.cache.update({result.uid: result})

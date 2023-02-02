@@ -1,7 +1,7 @@
 import uuid
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
-from gilgates_api.dao_factory import dao_factory
+from gilgates_api import dao_factory
 from gilgates_api.database import engine
 from gilgates_api.model import User
 from gilgates_api.model import Role
