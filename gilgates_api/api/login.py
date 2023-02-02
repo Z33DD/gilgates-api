@@ -1,7 +1,9 @@
 from fastapi import status, HTTPException, Depends, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlmodel import Session
 from pydantic import BaseModel, EmailStr
-from gilgates_api import context
+from gilgates_api.deps import get_session
+from gilgates_api import dao_factory
 from gilgates_api.services.auth import (
     verify_password,
     create_access_token,
@@ -23,8 +25,10 @@ class TokenSchema(BaseModel):
     summary="Create access and refresh tokens for user",
     response_model=TokenSchema,
 )
-async def login(form: OAuth2PasswordRequestForm = Depends()):
-    dao = context.get()
+async def login(
+    form: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)
+):
+    dao = dao_factory(session)
     user = await dao.user.get_by_email(form.username)
 
     if user is None:
@@ -59,8 +63,10 @@ class ResendWelcomeEmailSchema(BaseModel):
     "/resend_welcome_email",
     summary="Resent the welcome email to the customer",
 )
-async def resend_welcome_email(data: ResendWelcomeEmailSchema):
-    dao = context.get()
+async def resend_welcome_email(
+    data: ResendWelcomeEmailSchema, session: Session = Depends(get_session)
+):
+    dao = dao_factory(session)
     user = await dao.user.get_by_email(data.email)
 
     if user is None or user.password is not None:
