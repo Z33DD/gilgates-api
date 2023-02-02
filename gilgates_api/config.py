@@ -19,12 +19,12 @@ metadata = get_project_metadata(str(ROOT_DIR))
 
 ENV: str = env.str("ENV", default="development")
 
-
 if ENV == "production":
+    CONNECT_ARGS = {}
     DATABASE_URL = env.str("DATABASE_URL")
 else:
     DATABASE_URL = "sqlite:///db.sqlite3"
-    SQLALCHEMY_ENGINE_OPTIONS = {"connect_args": {"check_same_thread": False}}
+    CONNECT_ARGS = {"check_same_thread": False}
 
 DEBUG = env.bool("DEBUG", default=False)
 

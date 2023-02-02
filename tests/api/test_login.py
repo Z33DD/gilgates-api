@@ -1,13 +1,14 @@
+import secrets
+from sqlmodel import Session
 from pydantic import EmailStr
 from fastapi.testclient import TestClient
-import secrets
-from gilgates_api.model.user import User
-from gilgates_api import context
+from gilgates_api.model import User
 from gilgates_api.services.auth.password import hash_password
+from gilgates_api import dao_factory
 
 
-async def test_login(client: TestClient):
-    dao = context.get()
+async def test_login(client: TestClient, session: Session):
+    dao = dao_factory(session)
 
     email = f"{secrets.token_hex(8)}@example.com"
     password = secrets.token_hex(10)
@@ -15,11 +16,13 @@ async def test_login(client: TestClient):
     user = User(name="Test user for test_login", email=EmailStr(email))
     user.password = hash_password(password)
     await dao.user.create(user)
+    dao.commit()
 
     resp = client.post("/login", data={"username": email, "password": password})
 
     data = resp.json()
-    assert resp.status_code == 200
+    detail = data.get("detail")
+    assert resp.status_code == 200, f"Response: {detail}"
     assert "access_token" in dict(data).keys()
     assert "refresh_token" in dict(data).keys()
 

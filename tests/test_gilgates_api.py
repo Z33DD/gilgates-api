@@ -9,4 +9,4 @@ def test_version():
 
 @pytest.mark.skip(reason="No need to run this every time")
 async def test_create_table():
-    await create_tables()
+    create_tables()

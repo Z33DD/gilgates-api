@@ -1,4 +1,4 @@
-from gilgates_api.model.user import User
+from gilgates_api.model import User
 from gilgates_api.services.auth.password import hash_password, verify_password
 from gilgates_api.services.auth.token import create_access_token, verify_token
 

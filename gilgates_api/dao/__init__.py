@@ -1,18 +1,18 @@
-from typing import Any, Dict, Generic, List, TypeVar
+from typing import Dict, Generic, List, Type, TypeVar
 import uuid
-from sqlalchemy import Table
-from gilgates_api.database import db
+from sqlmodel import Session, select
 from gilgates_api.model import Model
 
-T = TypeVar("T")
+ModelType = TypeVar("ModelType", bound=Model)
 
 
-class BaseDAO(Generic[T]):
-    cache: Dict[uuid.UUID, T]
-    table: Table
-    schema: Model
+class BaseDAO(Generic[ModelType]):
+    needs_commit: bool = False
+    cache: Dict[uuid.UUID, ModelType]
+    model: ModelType
+    db: Session
 
-    def __init__(self, table: Table, schema: Model) -> None:
+    def __init__(self, session: Session, model: Type[ModelType]) -> None:
         """
         The __init__ function is called automatically when a new instance of the class is created.
         It sets up the object with all of the attributes that were defined in its signature.
@@ -20,62 +20,63 @@ class BaseDAO(Generic[T]):
 
         :param self: Refer to the instance of the class
         :param table: Table: Specify the table that is being mapped
-        :param schema: Model: Define the model that this table is associated with
+        :param model: Model: Define the model that this table is associated with
         :return: Nothing
         :doc-author: Trelent
         """
-        self.table = table
-        self.schema = schema
+        self.db = session
+        self.model = model
         self.cache = {}
 
     async def read(self, ids: List[uuid.UUID]) -> None:
         id_list = [str(a) for a in ids]
-        query = self.table.select().where(self.table.c.uid.in_(id_list))
-        items = await db.fetch_all(query)
+        statement = select(self.model).where(self.model.uid in id_list)
+        items = self.db.exec(statement)
         for item in items:
-            item = dict(item)
-            obj = self.__make_object(item)
-            self.cache.update({uuid.UUID(item["uid"]): obj})
+            self.cache.update({item.uid: item})
 
-    async def get(self, item_id: uuid.UUID) -> T | None:
+    async def get(self, item_id: uuid.UUID) -> ModelType | None:
         if item_id not in self.cache.keys():
-            await self.read([item_id])
+            statement = select(self.model).where(self.model.uid == str(item_id))
+            result = self.db.exec(statement).one_or_none()
+            if not result:
+                return None
+            self.cache.update({result.uid: result})
         return self.cache.get(item_id)
 
     async def delete(self, item_id: uuid.UUID) -> None:
-        query = self.table.delete().where(self.table.c.uid == str(item_id))
+        user = await self.get(item_id)
+        if not user:
+            return
+        self.db.delete(user)
         self.cache.pop(item_id, None)
-        await db.execute(query)
+        self.needs_commit = True
 
     async def create(self, item: Model) -> uuid.UUID:
-        values = item.dict()
-        values["uid"] = str(item.uid)
-        query = self.table.insert(values)
+        self.db.add(item)
+        self.db.flush([item])
         self.cache.update({item.uid: item})
+        self.needs_commit = True
 
-        await db.execute(query)
         return item.uid
 
     async def update(self, item: Model) -> None:
-        values = item.dict()
-        item_id = str(item.uid)
-        values["uid"] = item_id
-        query = self.table.update(self.table.c.uid == item_id, values)
-        await db.execute(query)
+        self.db.add(item)
+        self.needs_commit = True
 
-    async def get_all(self) -> List[T]:
-        query = self.table.select()
-        result = await db.execute(query)
-        return self.__make_objects(result)
-    
+    async def get_all(self) -> List[ModelType]:
+        statement = select(self.model)
+        results = self.db.exec(statement)
+        return results.all()
+
     def clear(self) -> None:
         self.cache = {}
 
-    def __make_object(self, data: Dict[str, Any]) -> T:
-        return self.schema.parse_obj(data)
+    def commit(self, force: bool = False) -> None:
+        if not self.needs_commit and not force:
+            return
 
-    def __make_objects(self, data: List[Dict[str, Any]]) -> List[T]:
-        items = []
-        for raw in data:
-            items.append(self.__make_object(raw))
-        return items
+        self.db.commit()
+
+        for item in self.cache.items():
+            self.db.flush(item)
