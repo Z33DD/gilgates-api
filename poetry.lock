@@ -459,6 +459,14 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
+name = "phonenumbers"
+version = "8.13.5"
+description = "Python version of Google's common library for parsing, formatting, storing and validating international phone numbers."
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "platformdirs"
 version = "2.6.2"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
@@ -810,7 +818,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "e25816d906bbe12116476507bfeae5d1b8b721932814a0c5621cafbefbabc838"
+content-hash = "927702e064d7db2efec2eacf757ff645fbf815e1806b6eba05b8faeab69f2740"
 
 [metadata.files]
 aiosqlite = []
@@ -846,6 +854,7 @@ mypy-extensions = []
 packaging = []
 passlib = []
 pathspec = []
+phonenumbers = []
 platformdirs = []
 pluggy = []
 postmarker = []

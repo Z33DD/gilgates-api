@@ -4,11 +4,11 @@ from fastapi import status, HTTPException
 from gilgates_api.model import User
 from gilgates_api.tasks import send_email
 from gilgates_api.services.auth import hash_password
-from gilgates_api.dao_factory import Dao
+from gilgates_api.dao_factory import MasterDAO
 
 
 async def create_new_user(
-    dao: Dao, name: str, email: EmailStr, password: str
+    dao: MasterDAO, name: str, email: EmailStr, password: str
 ) -> uuid.UUID:
     user = await dao.user.get_by_email(email)
     if user is not None:
