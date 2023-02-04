@@ -7,7 +7,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/user/me",
+    "/me",
     summary="Get details of currently logged in user",
     response_model=User,
 )
