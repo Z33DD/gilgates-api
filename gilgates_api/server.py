@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from gilgates_api import config as global_config
+from gilgates_api import config as global_config, logger
 from gilgates_api.settings import Settings
 from gilgates_api.api import api_router
-
 
 
 def app_factory(config: Settings) -> FastAPI:
@@ -28,6 +27,12 @@ def app_factory(config: Settings) -> FastAPI:
 
 
 app = app_factory(global_config)
+logger.info(
+    "Started!",
+    env=global_config.env,
+    database=global_config.database_url.split("://")[0],
+    broker=global_config.celery_broker_url,
+)
 
 
 @app.on_event("startup")

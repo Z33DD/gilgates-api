@@ -768,6 +768,20 @@ anyio = ">=3.4.0,<5"
 full = ["httpx (>=0.22.0)", "itsdangerous", "jinja2", "python-multipart", "pyyaml"]
 
 [[package]]
+name = "structlog"
+version = "22.3.0"
+description = "Structured Logging for Python"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.extras]
+dev = ["structlog"]
+docs = ["furo", "myst-parser", "sphinx", "sphinx-notfound-page", "sphinxcontrib-mermaid", "twisted"]
+tests = ["coverage", "freezegun (>=0.2.8)", "pretend", "pytest-asyncio (>=0.17)", "pytest (>=6.0)", "simplejson"]
+typing = ["mypy", "rich", "twisted"]
+
+[[package]]
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
@@ -830,7 +844,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "c0ce692a5fdd0ce5db45f5480382ee75c4d5bdb61bf9e6c98bfddd10069784e9"
+content-hash = "91b73232f3f2d178980863f07f6a19679a62df6ad3a22b217f7e22f9a22710be"
 
 [metadata.files]
 aiosqlite = []
@@ -890,6 +904,7 @@ sqlalchemy = []
 sqlalchemy2-stubs = []
 sqlmodel = []
 starlette = []
+structlog = []
 tomli = []
 typing-extensions = []
 urllib3 = []

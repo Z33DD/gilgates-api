@@ -5,6 +5,7 @@ from pydantic import ValidationError, BaseModel
 from fastapi import Depends
 from fastapi import HTTPException, status
 import jwt
+from gilgates_api import logger, config
 from gilgates_api.settings import get_settings
 from gilgates_api.settings import Settings
 from gilgates_api.model import User
@@ -17,7 +18,7 @@ class TokenPayload(BaseModel):
     exp: float
 
 
-def verify_token(token: str, config: Settings = Depends(get_settings)) -> TokenPayload:
+def verify_token(token: str) -> TokenPayload:
     """
     The verify_token function takes a token as an argument and returns the payload
     if the token is valid. If not, it raises an HTTPException with status code 401.
@@ -38,7 +39,8 @@ def verify_token(token: str, config: Settings = Depends(get_settings)) -> TokenP
             )
 
         return token_data
-    except (jwt.DecodeError, jwt.ExpiredSignatureError, ValidationError):
+    except (jwt.DecodeError, jwt.ExpiredSignatureError, ValidationError) as ex:
+        logger.exception(str(ex))
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Could not validate credentials",

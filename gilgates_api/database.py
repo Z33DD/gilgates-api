@@ -1,7 +1,5 @@
-from fastapi import Depends
 from sqlmodel import create_engine
 from gilgates_api.settings import config
-from gilgates_api.settings import Settings
 
 
 def engine_factory():
