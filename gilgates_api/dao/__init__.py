@@ -1,4 +1,4 @@
-from typing import Dict, Generic, List, Type, TypeVar
+from typing import Dict, Generic, List, Optional, Type, TypeVar
 import uuid
 from sqlmodel import Session, select
 from gilgates_api.model import Model
@@ -64,8 +64,12 @@ class BaseDAO(Generic[ModelType]):
         self.db.add(item)
         self.needs_commit = True
 
-    async def get_all(self) -> List[ModelType]:
+    async def get_all(
+        self, limit: Optional[int] = None, offset: Optional[int] = None
+    ) -> List[ModelType]:
         statement = select(self.model)
+        if limit and offset:
+            statement = statement.offset(offset).limit(limit)
         results = self.db.exec(statement)
         return results.all()
 
