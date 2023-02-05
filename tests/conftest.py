@@ -1,3 +1,4 @@
+from datetime import timedelta
 import secrets
 import pytest
 from pydantic import EmailStr
@@ -7,6 +8,7 @@ from gilgates_api import dao_factory
 from gilgates_api.server import app
 from gilgates_api.database import engine, create_tables
 from gilgates_api.model import User
+from gilgates_api.services.auth.token import create_access_token
 
 
 @pytest.fixture
@@ -29,3 +31,7 @@ async def user(session: Session) -> User:
     dao = dao_factory(session)
     await dao.user.create(user)
     return user
+
+@pytest.fixture
+def token(user: User):
+    return create_access_token(user, timedelta(days=1))

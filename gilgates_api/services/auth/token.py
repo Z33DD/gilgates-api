@@ -43,7 +43,7 @@ def verify_token(token: str) -> TokenPayload:
             )
 
         return token_data
-    except (jwt.DecodeError, ValidationError):
+    except (jwt.DecodeError, jwt.ExpiredSignatureError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Could not validate credentials",
