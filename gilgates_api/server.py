@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from gilgates_api.database import create_tables
-from gilgates_api.config import VERSION
+from gilgates_api import config as global_config
+from gilgates_api.settings import Settings
 from gilgates_api.api import api_router
 
 
-def app_factory() -> FastAPI:
-    app = FastAPI(title="GilGates API", version=VERSION)
+
+def app_factory(config: Settings) -> FastAPI:
+    app = FastAPI(title=config.app_name, version=config.version)
 
     app.include_router(api_router)
 
@@ -26,12 +27,12 @@ def app_factory() -> FastAPI:
     return app
 
 
-app = app_factory()
+app = app_factory(global_config)
 
 
 @app.on_event("startup")
 async def startup():
-    create_tables()
+    pass
 
 
 @app.on_event("shutdown")

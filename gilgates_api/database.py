@@ -1,12 +1,17 @@
-from sqlmodel import create_engine, SQLModel
-from gilgates_api import config
-
-engine = create_engine(
-    config.DATABASE_URL,
-    echo=config.DEBUG,
-    connect_args=config.CONNECT_ARGS,
-)
+from fastapi import Depends
+from sqlmodel import create_engine
+from gilgates_api.settings import config
+from gilgates_api.settings import Settings
 
 
-def create_tables() -> None:
-    SQLModel.metadata.create_all(engine)
+def engine_factory():
+    engine = create_engine(
+        config.database_url,
+        echo=config.debug,
+        connect_args=config.connect_args,
+    )
+
+    return engine
+
+
+engine = engine_factory()

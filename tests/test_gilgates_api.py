@@ -1,6 +1,6 @@
 from gilgates_api import __version__
 from gilgates_api.database import create_tables
-from gilgates_api.config import VERSION
+from gilgates_api.settings import VERSION
 import pytest
 
 

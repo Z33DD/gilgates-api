@@ -1,7 +1,7 @@
 from typing import Dict
 from gilgates_api.worker import app
 from gilgates_api.services.postmark import postmark
-from gilgates_api import config
+from gilgates_api import settings
 
 
 TEMPLATES = {"welcome": 30630498}
@@ -14,7 +14,7 @@ def send_email(email: str, template: str, template_data: Dict[str, str]):
     if not template_id:
         raise RuntimeError(f"Template {template} doesn't exists")
     
-    if config.ENV != "production":
+    if settings.ENV != "production":
         return
 
     postmark.emails.send_with_template(

@@ -9,7 +9,6 @@ python = "^3.10"
 fastapi = "^0.89.1"
 uvicorn = "^0.20.0"
 celery = "^5.2.7"
-environs = "^9.5.0"
 aiosqlite = "^0.18.0"
 pydantic = {extras = ["email"], version = "^1.10.4"}
 passlib = "^1.7.4"
@@ -20,6 +19,8 @@ postmarker = "^1.0"
 redis = "^4.4.2"
 tomli = "^2.0.1"
 phonenumbers = "^8.13.5"
+psycopg2 = "^2.9.5"
+python-dotenv = "^0.21.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "7.2.1"

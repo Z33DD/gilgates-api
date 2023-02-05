@@ -6,7 +6,7 @@ from sqlmodel import Session
 from fastapi.testclient import TestClient
 from gilgates_api import dao_factory
 from gilgates_api.server import app
-from gilgates_api.database import engine, create_tables
+from gilgates_api.database import engine
 from gilgates_api.model import User
 from gilgates_api.services.auth.token import create_access_token
 
@@ -18,7 +18,6 @@ def client():
 
 @pytest.fixture(name="session")
 def session_fixture():
-    create_tables()
     with Session(engine) as session:
         yield session
 
