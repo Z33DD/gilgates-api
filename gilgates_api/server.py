@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from gilgates_api import config as global_config, logger
 from gilgates_api.settings import Settings
@@ -46,8 +46,8 @@ async def shutdown():
 
 
 @app.get("/")
-async def index():
-    return {"name": "GilGates API", "version": app.version}
+async def index(request: Request):
+    return {"name": "GilGates API", "version": app.version, "docs_url": app.docs_url}
 
 
 if __name__ == "__main__":
