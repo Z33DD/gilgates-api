@@ -34,3 +34,8 @@ async def user(session: Session) -> User:
 @pytest.fixture
 def token(user: User):
     return create_access_token(user, timedelta(days=1))
+
+@pytest.fixture(autouse=True)
+def on_each_test():
+    pass
+    yield

@@ -23,7 +23,6 @@ class UserOut(BaseModel):
 
 @router.post("/signup", summary="Create new user", response_model=UserOut)
 async def create_user(data: UserSignUp, session: Session = Depends(get_session)):
-    # querying database to check if user already exist
     dao = dao_factory(session)
     uid = await create_new_user(
         dao, name=data.name, email=data.email, password=data.password
